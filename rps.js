@@ -1,3 +1,14 @@
+//initialize variables
+
+let playerScore = 0;
+let computerScore = 0;
+let currentRound = 0;
+let playerSelection = "";
+let computerSelection = "";
+
+const announce = document.querySelector('#results');
+const pscore = document.querySelector('#pscore');
+const cscore = document.querySelector('#cscore');
 
 // randomized computer selection from rps choices array
 function getComputerChoice () {
@@ -7,59 +18,35 @@ function getComputerChoice () {
     return choices[rando] ;
 }
 
-//function for player selection
-
-function getPlayerChoice () {
-    let choices = ["Rock","Paper","Scissors"] ;
-    let playerChoice = prompt("Please enter 'Rock', 'Paper', or 'Scissors' for your selection") ;
-    let sanitizedChoice = playerChoice[0].toUpperCase() + playerChoice.substring(1).toLowerCase() ;
-    let sanityCheck = choices.includes(sanitizedChoice) ;
-
-    while (sanityCheck === false) {
-        playerChoice = prompt("Incorrect submission. Please enter 'Rock', 'Paper', or 'Scissors' for your selection") ;
-        sanitizedChoice = playerChoice[0].toUpperCase() + playerChoice.substring(1).toLowerCase() ;
-        sanityCheck = choices.includes(sanitizedChoice) ;
-    }
-
-    return sanitizedChoice;
-}
-
 // single round of rps function, includes value comparisons
 
-function playRound(playerSelection, computerSelection) {
+document.getElementById('Rock').addEventListener('click', playRound, false);
+document.getElementById('Paper').addEventListener('click', playRound, false);
+document.getElementById('Scissors').addEventListener('click', playRound, false);
+
+function playRound(e) {
+    computerSelection = getComputerChoice();
+    playerSelection = this.id;
+
+    if (playerScore === 5 || computerScore === 5) {
+        announce.textContent = "The game is over!"
+        return;
+    }
+
     if (playerSelection === computerSelection) {
-        return 0
+        announce.textContent = "The round ends in a tie!";
     } else if ((playerSelection === "Rock" && computerSelection === "Scissors") || (playerSelection === "Paper" && computerSelection === "Rock") || (playerSelection === "Scissors" && computerSelection === "Paper")) {
-        return 1
+        playerScore ++;
+        announce.textContent = "The player wins this round!";
+        pscore.textContent = `${playerScore}`;
     } else {
-        return 2
-    }
-}
-
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    let currentRound = 0;
-    let playerSelection = "";
-    let computerSelection = "";
-
-    for (let i = 0; i < 5; i++) {
-        playerSelection = getPlayerChoice();
-        computerSelection = getComputerChoice();
-        currentRound = playRound(playerSelection, computerSelection);
-
-        if (currentRound === 1){
-            playerScore ++;
-            console.log(`You win this round! The score is - Player: ${playerScore} | Computer: ${computerScore}`)
-        } else if (currentRound === 2) {
-            computerScore ++;
-            console.log(`The computer wins this round! The score is - Player: ${playerScore} | Computer: ${computerScore}`)
-        } else {
-            console.log(`We have a tie! The score remains - Player: ${playerScore} | Computer: ${computerScore}`)
-        }        
+        computerScore ++;
+        announce.textContent = "The computer wins this round!";
+        cscore.textContent = `${computerScore}`;
     }
 
-    console.log(`The game has ended! The final score is - Player: ${playerScore} | Computer: ${computerScore}`)
+    if (playerScore === 5 || computerScore === 5) {
+        announce.textContent = "The game is over!"
+    }
+    return;
 }
-
-game();
